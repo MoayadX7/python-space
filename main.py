@@ -4,10 +4,35 @@ from pygame import gfxdraw
 import math , random
 
 # constants -----------------------------------------
-constants = {"G": 6.67430e-11, "time_scale":20000}
+colors = {
+    "red": (255, 0, 0),
+    "white": (255, 255, 255),
+    "blue": (0, 0, 255),
+    "yellow": (255, 255, 0),
+    "orange": (255, 165, 0),
+    "blue-white": (137, 207, 240),
+    "yellow-white": (255, 255, 224),
+    "light_blue": (173, 216, 230),
+    "light_yellow": (255, 255, 204),
+    "deep_blue": (0, 0, 139),
+    "pale_yellow": (255, 255, 153),
+    "cyan": (0, 255, 255),
+    "magenta": (255, 0, 255),
+    "violet": (238, 130, 238),
+    "gold": (255, 215, 0),
+    "light_goldenrod": (250, 250, 210),
+    "salmon": (250, 128, 114),
+    "lavender": (230, 230, 250),
+    "turquoise": (64, 224, 208),
+    "silver": (192, 192, 192),
+    "coral": (255, 127, 80),
+    "peach_puff": (255, 218, 185),
+    "plum": (221, 160, 221),
+    "orchid": (218, 112, 214)
+}
+constants = {"G": 6.67430e-11, "time_scale":5000}
 # G : the gravitational constant
 # time_scale : how much time passes in 1 frame (in seconds)
-colors={"red":(255,0,0),"white":(255,255,255)}
 # math functions -----------------------------------------
 def euclidean_distance(first_point, second_point):
     return 1.0*math.sqrt(pow(first_point[0] - second_point[0], 2) + pow(first_point[1] - second_point[1], 2))
@@ -48,14 +73,23 @@ class space_object:
         self.v_x=0
         self.v_y=0
         self.golem=False
+        self.color=None
         space_object.universe.append(self)
     def place_in_space(self):
         if self.position_x-self.radius/2>800 or self.position_x+self.radius/2<0 or self.position_y-self.radius/2>600 or self.position_y+self.radius/2<0:
             return
         x_cord=int(self.position_x)
         y_cord=int(self.position_y)
-        gfxdraw.aacircle(screen, x_cord, y_cord,int(self.radius), colors["white"])
-        gfxdraw.filled_circle(screen,  x_cord, y_cord,int(self.radius), colors["white"])
+        color=()
+        if self.color!=None:
+            color=self.color
+        else:
+            color=random.choice(list(colors.items()))[1]
+            self.color=color
+
+        
+        gfxdraw.aacircle(screen, x_cord, y_cord,int(self.radius), color)
+        gfxdraw.filled_circle(screen,  x_cord, y_cord,int(self.radius), color)
     @classmethod
     def do_the_magic(cls) -> None: # change positions and velocities according to gravity :)
         if not pause_game:
@@ -135,7 +169,7 @@ while game_state:
             
             space_object(drawer.radius,mouse_x,mouse_y)
             space_object.universe[-1].mass=drawer.mass
-    screen.fill((4, 12, 36))  # screen BG-color
+    screen.fill((0, 0, 0))  # screen BG-color
     space_object.do_the_magic()
     drawer.draw()
     
